@@ -21,15 +21,16 @@
 
 | Section | ห้องเรียน | วัน | บรรยายทฤษฏี  | ปฏิบัติการ  |
 |--------|---------|----|---------------|---------------|
-| 01     |  ST1905 | จันทร์ | 13.00 - 14.00  | 14.00 - 17.00|
+| 01     |  ST1905 | พุธ | 13.00 - 15.00  | 15.00 - 17.00|
 
-สอบกลางภาค: 29 สิงหาคม 2566 เวลา 09.00 - 12.00 @TBA
+สอบกลางภาค: 5 กันยายน 2568 เวลา 09.00 - 12.00 @TBA
 
-สอบปลายภาค: 24 ตุลาคม 2566 เวลา 09.00 - 12.00 @TBA
+สอบปลายภาค: 31 ตุลาคม 2568 เวลา 09.00 - 12.00 @TBA
 
 
 ## คำอธิบายรายวิชา
 ขั้นตอนการแก้ปัญหา หลักการทั่วไปเกี่ยวกับการเขียนโปรแกรม องค์ประกอบของประโยคคำสั่ง เช่น ตัวแปร ค่าคงที่ เครื่องหมายกระทำการ นิพจน์ ฟังก์ชัน เป็นต้น ชนิดของข้อมูลแบบต่าง ๆ โครงสร้างข้อมูลแบบอาร์เรย์ โครงสร้างคำสั่งแบบตามลำดับ เลือกทำ และ การวนซ้ำ การเรียกใช้โปรแกรมย่อย การสร้างโปรแกรมย่อย การส่งผ่านค่าภายในโปรแกรม การบันทึกและอ่านข้อมูลจากแฟ้มข้อมูล การตรวจสอบ ทดสอบและแก้ไขโปรแกรม และการใช้เครื่องมือในการพัฒนาโปรแกรม
+
 
 Algorithmic problem solving, general concepts for computer programming, components of a statement such as variables, constants, operators, expressions, functions, various types of data, structured data types of array, program structures of sequence, selections and repetitions, subroutine calls, program modules, parameter passing, sequential and random access file operation, testing and debugging, using of tools for program development
 
