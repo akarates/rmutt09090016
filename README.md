@@ -74,16 +74,14 @@ Algorithmic problem solving, general concepts for computer programming, componen
 
 |    | หัวข้อ | เอกสารประกอบ |
 |----| -----|------------|
-| 1  | แนะนําภาษาโปรแกรมไพธอน | [เอกสารบทที่ 1](./materials/ch_01/texts.pdf) |
-| 2  | แนะนําเครื่องมือพัฒนาโปรแกรมด้วยภาษาไพธอน  | [เอกสารบทที่ 2](./materials/ch_02/texts.pdf)  |
-| 3  | ตัวแปรและชนิดข้อมูลในภาษาโปรแกรมไพธอน | [เอกสารบทที่ 3](./materials/ch_03/texts.pdf) และ [ตัวอย่างโปรแกรม](https://github.com/epsilonxe/RMUTT_09090016/tree/master/materials/ch_03) |
-| 4  | ชนิดข้อมูลสตริง | [เอกสารบทที่ 4](./materials/ch_04/texts.pdf) และ [ตัวอย่างโปรแกรม](https://github.com/epsilonxe/RMUTT_09090016/tree/master/materials/ch_04) |
-| 5  | โครงสร้างข้อมูลภาษาโปรแกรมไพธอน | [เอกสารบทที่ 5](./materials/ch_05/texts.pdf) และ [ตัวอย่างโปรแกรม](https://github.com/epsilonxe/RMUTT_09090016/tree/master/materials/ch_05) |
-| 6  | คําสั่งควบคุมทิศทางการทํางานโปรแกรม | [เอกสารบทที่ 6](./materials/ch_06/texts.pdf) และ [ตัวอย่างโปรแกรม](https://github.com/epsilonxe/RMUTT_09090016/tree/master/materials/ch_06) |
-| 7  | ฟังก์ชัน | [เอกสารบทที่ 7](./materials/ch_07/texts.pdf) และ [ตัวอย่างโปรแกรม](https://github.com/epsilonxe/RMUTT_09090016/tree/master/materials/ch_07) |
-| 8  | แนะนําการเขียนโปรแกรมเชิงวัตถุ | [เอกสารบทที่ 8](./materials/ch_08/texts.pdf) และ [ตัวอย่างโปรแกรม](https://github.com/epsilonxe/RMUTT_09090016/tree/master/materials/ch_08) |
-| 9  | การจัดการข้อผิดพลาด | [เอกสารบทที่ 9](./materials/ch_09/texts.pdf) และ [ตัวอย่างโปรแกรม](https://github.com/epsilonxe/RMUTT_09090016/tree/master/materials/ch_09) |
-| 10 | การใช้งานโมดูลและแพ็คเกจ | [เอกสารบทที่ 10](./materials/ch_10/texts.pdf) และ [ตัวอย่างโปรแกรม](https://github.com/epsilonxe/RMUTT_09090016/tree/master/materials/ch_10) |
+| 1  | แนะนําภาษาโปรแกรมไพธอน | [เอกสารบทที่ 1](./materials/ch_01/ch1.pdf) |
+| 2  | แนะนําเครื่องมือพัฒนาโปรแกรมด้วยภาษาไพธอน  | [เอกสารบทที่ 2](./materials/ch_02/ch2.pdf)  |
+| 3  | ตัวแปรและชนิดข้อมูลในภาษาโปรแกรมไพธอน | [เอกสารบทที่ 3](./materials/ch_03/ch3.pdf) |
+| 4  | ชนิดข้อมูลสตริง | [เอกสารบทที่ 4](./materials/ch_04/texts.pdf) |
+| 5  | โครงสร้างข้อมูลภาษาโปรแกรมไพธอน | [เอกสารบทที่ 5](./materials/ch_05/texts.pdf) |
+| 6  | คําสั่งควบคุมทิศทางการทํางานโปรแกรม | [เอกสารบทที่ 6](./materials/ch_06/texts.pdf) |
+| 7  | ฟังก์ชัน | [เอกสารบทที่ 7](./materials/ch_07/texts.pdf) |
+
 
 
 ## การวัดผลการเรียน
