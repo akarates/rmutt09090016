@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Username Total Finder</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Sarabun', 'Inter', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+
+    <div class="bg-white p-8 rounded-2xl shadow-lg max-w-lg w-full m-4">
+        <div class="text-center mb-8">
+            <h1 class="text-3xl font-bold text-gray-800">พื้นฐานการเขียนโปรแกรม</h1>
+            <p class="text-gray-500 mt-2">กรอกรหัสนักศึกษาเพื่อตรวจสอบคะแนนสอบกลางภาค 1/2568</p>
+        </div>
+
+        <!-- Username Input Section -->
+        <div class="mb-4">
+            <label for="username-input" class="block text-sm font-medium text-gray-700">Student ID</label>
+            <input type="text" id="username-input" placeholder="e.g., 115030411234-2" class="mt-2 block w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition">
+        </div>
+
+        <!-- PDPA Consent Checkbox -->
+        <div class="flex items-start mb-6">
+            <div class="flex items-center h-5">
+                <input id="pdpa-consent" name="pdpa-consent" type="checkbox" class="focus:ring-blue-500 h-4 w-4 text-blue-600 border-gray-300 rounded">
+            </div>
+            <div class="ml-3 text-sm">
+                <label for="pdpa-consent" class="font-medium text-gray-700">การยืนยันความเป็นส่วนตัว</label>
+                <p class="text-gray-500">ข้าพเจ้ายืนยันว่าชื่อผู้ใช้ที่กรอกเป็นของข้าพเจ้าเอง และยินยอมให้มีการประมวลผลข้อมูลส่วนบุคคลเพื่อตรวจสอบคะแนน</p>
+            </div>
+        </div>
+
+
+        <!-- Find Button -->
+        <button id="find-total-btn" class="w-full bg-blue-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-transform transform hover:scale-105 shadow-md disabled:bg-gray-400 disabled:cursor-not-allowed disabled:transform-none" disabled>
+            ตรวจสอบคะแนน
+        </button>
+
+        <!-- Result Display Section -->
+        <div id="result-container" class="mt-8 text-center hidden">
+            <div class="p-6 bg-gray-50 rounded-lg">
+                <p id="user-name-output" class="text-2xl font-semibold text-gray-700 mb-2"></p>
+                <p class="text-lg text-gray-600">Total Score:</p>
+                <p id="result-output" class="text-4xl font-extrabold text-blue-600 mt-2">-</p>
+            </div>
+            
+            <!-- Normal Curve Chart -->
+            <div class="mt-6" id="chart-container">
+                <canvas id="score-curve-canvas" width="500" height="250"></canvas>
+                <div class="text-sm text-gray-600 mt-2" id="stats-container">
+                    <p>Class Average: <span id="avg-score" class="font-bold"></span></p>
+                    <p>Standard Deviation: <span id="std-dev" class="font-bold"></span></p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Error Message -->
+        <div id="error-message" class="mt-6 text-center text-red-600 font-medium hidden"></div>
+
+    </div>
+
+    <script>
+        // Store parsed CSV data globally
+        let csvData = [];
+        let scoreStats = { mean: 0, stdDev: 0 };
+        const fullScore = 72;
+        
+        // --- Hardcoded CSV data ---
+        const csvContent = `student_id,name,score
+student_id,name,score
+116810901002-9,นายศรัณยพงค์ กล่ำอยู่สุข,52.5
+116810901010-2,นายธนาวุฒิ อิ่มทอง,37
+116810901012-8,นางสาวศุภัธญา พู่สกุล,30.5
+116810901014-4,นางสาวกมลพร ตาบทอง,49.5
+116810901016-9,นางสาวศรุดา วิลัย,41.5
+116810901017-7,นางสาวพิทยาภรณ์ ทองดีนอก,13
+116810901018-5,นางสาวพัทธนันท์ กิตติวิโรจน์ชัย,45
+116810901019-3,นายชัยณัฐ เดชจงกล,61.5
+116810901020-1,นางสาวพรนภา สุขเกษม,10
+116810901021-9,นางสาวทิวาพร เชื้อเมืองพาน,48.5
+116810901022-7,นางสาวศศิรดา อินทร์สิงห์,67
+`;
+
+        const usernameInput = document.getElementById('username-input');
+        const findButton = document.getElementById('find-total-btn');
+        const pdpaConsent = document.getElementById('pdpa-consent');
+        const resultContainer = document.getElementById('result-container');
+        const resultOutput = document.getElementById('result-output');
+        const userNameOutput = document.getElementById('user-name-output');
+        const errorMessage = document.getElementById('error-message');
+        const canvas = document.getElementById('score-curve-canvas');
+        const chartContainer = document.getElementById('chart-container');
+        const avgScoreEl = document.getElementById('avg-score');
+        const stdDevEl = document.getElementById('std-dev');
+
+        /**
+         * Parses the text content of a CSV string.
+         */
+        function parseCSV(text) {
+            const lines = text.split(/\r\n|\n/).filter(line => line.trim() !== ''); 
+            if (lines.length < 2) { showError("CSV data is empty or invalid."); return; }
+            const headers = lines[0].split(',');
+            const studentIdIndex = headers.indexOf('student_id');
+            const nameIndex = headers.indexOf('name');
+            const scoreIndex = headers.indexOf('score');
+
+            if(studentIdIndex === -1 || nameIndex === -1 || scoreIndex === -1) { 
+                showError("CSV must have 'student_id', 'name', and 'score' columns."); 
+                return; 
+            }
+            csvData = lines.slice(1).map(line => {
+                const data = line.split(',');
+                return { 
+                    student_id: data[studentIdIndex]?.trim(), 
+                    name: data[nameIndex]?.trim(),
+                    score: data[scoreIndex]?.trim()
+                };
+            });
+        }
+        
+        /**
+         * Calculates the mean and standard deviation of the scores.
+         */
+        function calculateStatistics() {
+            const scores = csvData.map(row => Number(row.score)).filter(score => !isNaN(score));
+            if (scores.length === 0) return;
+            
+            const mean = scores.reduce((acc, val) => acc + val, 0) / scores.length;
+            const variance = scores.reduce((acc, val) => acc + Math.pow(val - mean, 2), 0) / scores.length;
+            const stdDev = Math.sqrt(variance);
+
+            scoreStats = { mean, stdDev };
+            avgScoreEl.textContent = mean.toFixed(2);
+            stdDevEl.textContent = stdDev.toFixed(2);
+        }
+
+        // --- Event Listener to parse data when the page loads ---
+        document.addEventListener('DOMContentLoaded', () => {
+            parseCSV(csvContent);
+            calculateStatistics();
+        });
+
+        // --- Event Listener for Consent Checkbox ---
+        pdpaConsent.addEventListener('change', () => {
+            findButton.disabled = !pdpaConsent.checked;
+        });
+
+        // --- Event Listener for Find Button ---
+        findButton.addEventListener('click', () => {
+            const studentId = usernameInput.value.trim();
+            if (!studentId) { showError("Please enter a Student ID."); return; }
+            hideError();
+
+            const userRecord = csvData.find(row => row.student_id === studentId);
+
+            if (userRecord) {
+                userNameOutput.textContent = userRecord.name;
+                const scoreValue = userRecord.score;
+
+                if (!isNaN(parseFloat(scoreValue)) && isFinite(scoreValue)) {
+                    const numericScore = Number(scoreValue);
+                    resultOutput.textContent = `${numericScore} / ${fullScore}`;
+                    chartContainer.style.display = 'block';
+                    showResult();
+                    drawNormalCurve(numericScore);
+                } else {
+                    resultOutput.textContent = scoreValue;
+                    chartContainer.style.display = 'none';
+                    showResult();
+                }
+            } else {
+                showError(`Student ID "${studentId}" not found.`);
+                hideResult();
+            }
+        });
+        
+        usernameInput.addEventListener('keyup', (event) => {
+            if (event.key === 'Enter') { 
+                event.preventDefault(); 
+                if(!findButton.disabled) {
+                    findButton.click(); 
+                }
+            }
+        });
+
+        /**
+         * Draws the normal distribution curve on the canvas.
+         * @param {number} userScore - The score of the current user.
+         */
+        function drawNormalCurve(userScore) {
+            const ctx = canvas.getContext('2d');
+            const { width, height } = canvas;
+            ctx.clearRect(0, 0, width, height);
+
+            const { mean, stdDev } = scoreStats;
+            if (stdDev === 0) return;
+
+            const padding = 50;
+            const chartWidth = width - padding * 2;
+            const chartHeight = height - padding;
+            
+            // Function to map a score to an X coordinate
+            const getX = (score) => padding + (score / fullScore) * chartWidth;
+
+            // Function for the normal distribution PDF
+            const pdf = (x) => (1 / (stdDev * Math.sqrt(2 * Math.PI))) * Math.exp(-0.5 * Math.pow((x - mean) / stdDev, 2));
+            const maxPdf = pdf(mean); // Peak of the curve
+
+            // Draw the curve
+            ctx.beginPath();
+            ctx.moveTo(getX(0), height - padding / 2);
+            for (let score = 0; score <= fullScore; score += 0.5) {
+                const x = getX(score);
+                const y = (height - padding / 2) - (pdf(score) / maxPdf) * (chartHeight * 0.9);
+                ctx.lineTo(x, y);
+            }
+            ctx.strokeStyle = '#3b82f6'; // Blue
+            ctx.lineWidth = 2;
+            ctx.stroke();
+
+            // Draw X-axis
+            ctx.beginPath();
+            ctx.moveTo(padding, height - padding / 2);
+            ctx.lineTo(width - padding, height - padding / 2);
+            ctx.strokeStyle = '#9ca3af'; // Gray
+            ctx.lineWidth = 1;
+            ctx.stroke();
+
+            // Helper to draw lines and text
+            const drawMarker = (score, color, text, isUser = false) => {
+                const x = getX(score);
+                ctx.beginPath();
+                ctx.moveTo(x, height - padding / 2);
+                ctx.lineTo(x, padding / 2);
+                ctx.strokeStyle = color;
+                ctx.lineWidth = isUser ? 2 : 1;
+                ctx.setLineDash(isUser ? [] : [5, 5]);
+                ctx.stroke();
+                ctx.setLineDash([]);
+                
+                ctx.fillStyle = color;
+                ctx.font = 'bold 12px Inter';
+                ctx.textAlign = 'center';
+                ctx.fillText(text, x, padding / 2 - 5);
+            };
+
+            // Draw markers
+            drawMarker(mean, '#10b981', `Avg: ${mean.toFixed(1)}`);
+            drawMarker(userScore, '#ef4444', `You: ${userScore}`, true);
+
+            // Add axis labels
+            ctx.fillStyle = '#6b7280';
+            ctx.font = '12px Inter';
+            ctx.fillText('0', padding, height - padding / 2 + 15);
+            ctx.fillText(String(fullScore), width - padding, height - padding/2 + 15);
+        }
+
+        // --- UI Helper Functions ---
+        function showError(message) { errorMessage.textContent = message; errorMessage.classList.remove('hidden'); }
+        function hideError() { if (!errorMessage.classList.contains('hidden')) { errorMessage.classList.add('hidden'); } }
+        function showResult() { if (resultContainer.classList.contains('hidden')) { resultContainer.classList.remove('hidden'); } }
+        function hideResult() { 
+            if (!resultContainer.classList.contains('hidden')) { 
+                resultContainer.classList.add('hidden'); 
+            } 
+            resultOutput.textContent = '-';
+            userNameOutput.textContent = '';
+        }
+    </script>
+</body>
+</html>
+
